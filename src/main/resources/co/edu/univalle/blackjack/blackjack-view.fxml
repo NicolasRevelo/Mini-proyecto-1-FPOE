@@ -62,7 +62,7 @@
             </padding>
             <TextField fx:id="campoApuesta" promptText="Apuesta (múltiplo de 10)" prefWidth="190.0"/>
             <Button fx:id="btnIniciar" text="Iniciar ronda" onAction="#onIniciarRonda"/>
-            <Button fx:id="btnPedir" text="Pedir carta"/>
+            <Button fx:id="btnPedir" text="Pedir carta" onAction="#onPedirCarta"/>
             <Button fx:id="btnPlantarse" text="Plantarse"/>
             <Button fx:id="btnReglas" text="Ver reglas"/>
             <Button fx:id="btnCerrar" text="Cerrar juego"/>

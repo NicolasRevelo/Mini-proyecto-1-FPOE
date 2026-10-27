@@ -60,7 +60,12 @@ public class BlackjackController {
         partida.iniciarRonda(Integer.parseInt(campoApuesta.getText().trim()));
         actualizarVista();
     }
-
+    /** Se ejecuta al pulsar "Pedir carta". */
+    @FXML
+    private void onPedirCarta() {
+        partida.pedirCarta();   // le pedimos al modelo que reparta una carta más
+        actualizarVista();      // volvemos a leer el modelo y repintamos
+    }
     /**
      * Pinta TODA la pantalla según lo que diga el modelo.
      * La idea: la pantalla siempre es un reflejo del estado de la Partida.
