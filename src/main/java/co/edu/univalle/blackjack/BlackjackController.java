@@ -1,15 +1,18 @@
 package co.edu.univalle.blackjack;
 
+import co.edu.univalle.blackjack.modelo.Carta;
 import co.edu.univalle.blackjack.modelo.Mano;
 import co.edu.univalle.blackjack.modelo.Partida;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
- * Controlador de la pantalla principal (Persona B).
+ (Persona B).
  * Regla de oro del contrato: este controlador NUNCA cambia el saldo, las manos
  * ni el estado directamente. Le pide cosas a la Partida (el modelo) y luego
  * vuelve a leer para dibujar la pantalla.
@@ -46,7 +49,6 @@ public class BlackjackController {
 
     /**
      * Se ejecuta al pulsar "Iniciar ronda" (onAction="#onIniciarRonda" en el FXML).
-     * Por ahora solo valida la apuesta (HU02). El reparto de cartas es del Día 3.
      */
     @FXML
     private void onIniciarRonda() {
@@ -55,7 +57,8 @@ public class BlackjackController {
             lblMensaje.setText(error);   // apuesta incorrecta: solo se muestra el motivo
             return;
         }
-        lblMensaje.setText("Apuesta válida. El reparto de cartas se programa el Día 3.");
+        partida.iniciarRonda(Integer.parseInt(campoApuesta.getText().trim()));
+        actualizarVista();
     }
 
     /**
@@ -67,6 +70,8 @@ public class BlackjackController {
         lblApuesta.setText(partida.getApuesta() > 0 ? "Apuesta: " + partida.getApuesta() : "Apuesta: -");
         lblPuntajeJugador.setText("Puntaje: " + puntajeTexto(partida.getManoJugador()));
         lblPuntajeComputador.setText("Puntaje: " + puntajeTexto(partida.getManoComputador()));
+        dibujarMano(cartasJugador, partida.getManoJugador());
+        dibujarMano(cartasComputador, partida.getManoComputador());
 
         // Los botones se habilitan o deshabilitan según el estado (lo decide el modelo)
         btnIniciar.setDisable(!partida.puedeIniciarRonda());
@@ -75,6 +80,24 @@ public class BlackjackController {
         btnPlantarse.setDisable(!partida.puedePlantarse());
         // "Ver reglas" y "Cerrar juego" quedan siempre habilitados (HU01 criterio 1.4)
     }
+        /** Dibuja una imagen por cada carta de la mano. */
+        private void dibujarMano(HBox zona, Mano mano) {
+            zona.getChildren().clear();                       // borra lo que había
+            for (Carta carta : mano.getCartas()) {            // recorre las cartas
+                zona.getChildren().add(crearImagenCarta(carta));  // una imagen por carta
+            }
+        }
+
+/** Arma la imagen de una carta a partir de su rango y su palo. */
+        private ImageView crearImagenCarta(Carta carta) {
+            String ruta = "/imagenes/" + carta.getRango().getSimbolo() + "_"
+                    + carta.getPalo().name().toLowerCase() + ".png";
+            ImageView imagen = new ImageView(new Image(getClass().getResourceAsStream(ruta)));
+            imagen.setFitWidth(110);
+            imagen.setPreserveRatio(true);
+            return imagen;
+        }
+
 
     /** Si la mano está vacía muestra "-"; si no, el puntaje. */
     private String puntajeTexto(Mano mano) {

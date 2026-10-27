@@ -18,3 +18,4 @@ para comprobar el resultado (compilar, ejecutar, comparar con el enunciado o con
 ## Entradas nuevas
 -NICOLÁS: Se le pide a la IA que cree las 8 clases de una aprtida simulada para que B con estos datos pueda trabajar sin esperar a A
 -NICOLÁS: Se le pide a la IA que genera las 52 imágenes de las cartas, lo genera con un script de python, incluido en docs
+-NICOLÁS: Se le pide a la IA que explique un poco cómo se conectan los archivos blackjack-view.fxml, BlackjackController.java y BlackjackApp.java, le pedí que comprobara los criterios de la HU01
