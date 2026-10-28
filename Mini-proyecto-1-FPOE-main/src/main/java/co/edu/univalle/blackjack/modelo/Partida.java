@@ -23,7 +23,7 @@ public class Partida {
     private String mensajeResultado = "";
     private int pagoRonda = 0;
 
-    /** Elimio el guion falso dado por mi compañero para poder trabajar por separado
+    /** Elimino el guion falso dado por mi compañero para poder trabajar por separado
      y comienzo con la declaración de los atributos y constructores
      para que la clase pueda funcionar en el juego real */
 
