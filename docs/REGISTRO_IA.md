@@ -29,3 +29,4 @@ para comprobar el resultado (compilar, ejecutar, comparar con el enunciado o con
 Veinte y medio y Blackjack no se anuncian (HU04 4.3 y HU07 7.5). Dicen que con 14 se muestra el mensaje de Veinte y medio y que “se informa la jugada”. Tu controlador nunca consulta getJugada(). Antes te dije que HU04 estaba completa, y no era cierto. Lo corregimos ahora.
 Sin fichas (HU10 10.4). Si pierdes y quedas con menos de 10 fichas, el mensaje solo dice que perdiste. Debe informar que no es posible seguir apostando.
 
+-NICOLÁS: Se le pide a claude que realice la tabla para rellenar de la amtriz de pruebas
