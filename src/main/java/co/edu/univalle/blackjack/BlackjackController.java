@@ -194,6 +194,24 @@ public class BlackjackController {
             imagen.setPreserveRatio(true);
             return imagen;
         }
+    /** Pregunta si de verdad quiere salir. Devuelve true solo si confirma. */
+    boolean confirmarCierre() {
+        ButtonType salir = new ButtonType("Salir", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION,
+                "Se perderá la partida en curso. ¿Quieres cerrar el juego?", salir, cancelar);
+        alerta.initOwner(btnCerrar.getScene().getWindow());
+        alerta.setTitle("Cerrar juego");
+        alerta.setHeaderText("Confirmar cierre");
+        return alerta.showAndWait().orElse(cancelar) == salir;
+    }
+
+    @FXML
+    private void onCerrar() {
+        if (confirmarCierre()) {
+            Platform.exit();
+        }
+    }
 
 
     /** Si la mano está vacía muestra "-"; si no, el puntaje. */
