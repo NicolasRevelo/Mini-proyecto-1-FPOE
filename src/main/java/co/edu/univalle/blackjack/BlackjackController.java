@@ -85,7 +85,21 @@ public class BlackjackController {
         lblMensaje.setText("Ingresa una apuesta para comenzar.");
         actualizarVista();
     }
-
+    /*
+    Metodo que abre la ventana de las reglas     */
+    @FXML
+    private void onVerReglas() {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.initOwner(btnReglas.getScene().getWindow());
+        alerta.setTitle("Reglas");
+        alerta.setHeaderText("Reglas de 21 Black Jack");
+        TextArea texto = new TextArea(REGLAS);
+        texto.setEditable(false);
+        texto.setWrapText(true);
+        texto.setPrefSize(540, 400);
+        alerta.getDialogPane().setContent(texto);
+        alerta.showAndWait();
+    }
     /**
      * Se ejecuta al pulsar "Iniciar ronda" (onAction="#onIniciarRonda" en el FXML).
      */
