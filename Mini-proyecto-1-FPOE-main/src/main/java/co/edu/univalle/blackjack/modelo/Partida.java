@@ -31,11 +31,18 @@ public class Partida {
     private Mazo mazoDePrueba;
 
     /** Una partida normal con un saldo de 1000 y un mazo nuevo */
-    public Partida (){
+    public Partida () {
         this(SALDO_INICIAL, null);
     }
-
-
+    /**Constructor para las pruebas*/
+    public Partida (Mazo mazoDePrueba) {
+        this(SALDO_INICIAL, mazoDePrueba);
+    }
+    /** El mismo contructor para pruebas pero con un saldo inicial diferente*/
+    Partida(int saldoInicial, Mazo mazoDePrueba) {
+        this.saldo = saldoInicial;
+        this.mazoDePrueba= mazoDePrueba;
+    }
 
     // =====================================================
     //  CONSULTAS (la vista solo lee con estos metodos)
@@ -123,6 +130,9 @@ public class Partida {
      * @throws IllegalArgumentException si la apuesta no es valida o no se puede iniciar ahora.
      */
     public void iniciarRonda(int apuestaNueva) {
+
+        if (!puedeIniciarRonda()) return;
+
         String error = validarApuesta(String.valueOf(apuestaNueva));
         if (error != null) throw new IllegalArgumentException(error);
 
@@ -135,12 +145,20 @@ public class Partida {
         apuesta = apuestaNueva;
         saldo -= apuesta;                         // se descuenta UNA sola vez
 
-        escenario = siguienteEscenario;           // guion falso
-        siguienteEscenario = (siguienteEscenario + 1) % JUGADOR_INICIAL.length;
-        extrasJugador = 0;
-        extrasComputador = 0;
+        /** De nuevo elimino el guion falso y agrego un orden fijo*/
 
-        for (Carta carta : JUGADOR_INICIAL[escenario]) manoJugador.agregar(carta);
+        if(mazoDePrueba != null) {
+            mazo = mazoDePrueba;
+            mazoDePrueba = null;
+        } else {
+            mazo = new Mazo();
+            mazo.mezclar();
+        }
+
+        /** El jugador recibe dos cartas*/
+
+        manoJugador.agregar(mazo.repartir());
+        manoJugador.agregar(mazo.repartir());
 
         if (manoJugador.puntaje() == 21) {        // 21 o Blackjack: pasa solo al computador
             estado = EstadoRonda.TURNO_COMPUTADOR;
@@ -152,10 +170,8 @@ public class Partida {
     /** El jugador pide una carta. Fuera de su turno no hace nada. */
     public void pedirCarta() {
         if (estado != EstadoRonda.TURNO_JUGADOR) return;
-        if (extrasJugador >= JUGADOR_EXTRA[escenario].length) {
-            throw new IllegalStateException("Versión falsa: se acabaron las cartas del guion.");
-        }
-        manoJugador.agregar(JUGADOR_EXTRA[escenario][extrasJugador++]);
+
+        manoJugador.agregar(mazo.repartir());
 
         if (manoJugador.sePaso()) {
             resolver();                           // pierde de inmediato; el computador no juega
@@ -180,62 +196,106 @@ public class Partida {
     public void jugarPasoComputador() {
         if (estado != EstadoRonda.TURNO_COMPUTADOR) return;
 
-        if (manoComputador.estaVacia()) {
-            for (Carta carta : COMPUTADOR_INICIAL[escenario]) manoComputador.agregar(carta);
-            boolean hayBlackjack = manoJugador.esBlackjack() || manoComputador.esBlackjack();
-            if (hayBlackjack || manoComputador.puntaje() >= 17) resolver();
-            return;
+        /**Elimino esta parte para simplificar, a la vez no es necesario
+         realizar un escenario en el juego real*/
+
+        if (manoComputador.estaVacia()){
+            manoComputador.agregar(mazo.Repartir());
+            manoComputador.agregar(mazo.Repartir());
+            if (manoJugador.esBlackjack() || manoComputador.esBlackjack()) {
+                resolver();
+                return;
+            }
+        } else if (manoJugador.esBlackjack() || < PUNTAJE_PLANTARSE_COMPUTADOR){
+            manoComputador.agregar(mazo.repartir());
         }
 
-        manoComputador.agregar(COMPUTADOR_EXTRA[escenario][extrasComputador++]);
-        if (manoComputador.sePaso() || manoComputador.puntaje() >= 17) resolver();
+        if (manoComputador.sePaso() || manoComputador.puntaje() >= PUNTAJE_PLANTARSE_COMPUTADOR) {
+            resolver();
+        }
     }
+    /** En este punto quiero que si el jugador tenga blackjack solo importe
+     si la maquina tambien lo tiene, si empatan el computador no pierde las cartas
+     y si la maquina saca black jack gana, ademas el ulitmo if se asegura de que las decisiones de la maquina dependen de su mano
+     */
+
 
     // =====================================================
-    //  Resolucion (version simplificada; A implementa las reglas completas)
+    //  Resolución de la ronda, con los guiones ya borrados.
     // =====================================================
+    /**Primero quiero comparar una mano valida*/
+    private static int fuerza (Mano mano){
+        if (mano.esBlackjack()) return 4;
+        if (mano.puntaje() == 21) return 3;
+        if (mano.esVeinteYMedio()) return 2;
+        return 1;
+    }
 
     private void resolver() {
         Mano j = manoJugador;
         Mano c = manoComputador;
 
-        if (j.sePaso()) {
-            cerrar(ResultadoRonda.DERROTA, 0,
-                   "Te pasaste de 21 con " + j.puntaje() + ". Pierdes la ronda.");
-        } else if (c.sePaso()) {
-            cerrar(ResultadoRonda.VICTORIA, 2 * apuesta,
-                   "El computador se pasó con " + c.puntaje() + ". ¡Ganas!");
-        } else if (j.esBlackjack() || c.esBlackjack()) {
-            if (j.esBlackjack() && c.esBlackjack()) {
-                cerrar(ResultadoRonda.EMPATE, apuesta, "Ambos tienen Blackjack. Empate.");
-            } else if (j.esBlackjack()) {
-                cerrar(ResultadoRonda.VICTORIA, apuesta * 5 / 2, "¡Blackjack! Ganas con pago 3 a 2.");
-            } else {
-                cerrar(ResultadoRonda.DERROTA, 0, "El computador tiene Blackjack. Pierdes la ronda.");
-            }
-        } else if (j.esVeinteYMedio() && c.puntaje() < 21) {
-            // PENDIENTE (A): revisar prioridades de Veinte y medio contra 21 y contra otro Veinte y medio.
-            cerrar(ResultadoRonda.VICTORIA, 2 * apuesta,
-                   "Veinte y medio le gana a tu rival (" + c.puntaje() + "). ¡Ganas!");
-        } else if (j.puntaje() > c.puntaje()) {
-            cerrar(ResultadoRonda.VICTORIA, 2 * apuesta,
-                   "Ganas con " + j.puntaje() + " contra " + c.puntaje() + ".");
-        } else if (j.puntaje() < c.puntaje()) {
-            cerrar(ResultadoRonda.DERROTA, 0,
-                   "Pierdes: " + j.puntaje() + " contra " + c.puntaje() + ".");
-        } else {
-            cerrar(ResultadoRonda.EMPATE, apuesta,
-                   "Empate con " + j.puntaje() + " puntos. Se devuelve tu apuesta.");
+        /**Para que si el jugador se pase pierda*/
+        if (j.sePaso()){
+            cerrar(ResultadoRonda.DERROTA,0,"Te pasaste de 21 con" + j.puntaje() + "Pierdes la ronda.");
+            return;
         }
-    }
+        if (c.sePaso()){
+            cerrar(ResultadoRonda.VICTORIA,2 * apuesta, "El computador se paso de 21 con " + c.puntaje() + ". Ganaste!");
+            return;
+        }
 
-    /** Cierra la ronda y aplica el pago al saldo UNA sola vez. */
-    private void cerrar(ResultadoRonda res, int pago, String mensaje) {
-        if (estado == EstadoRonda.RONDA_TERMINADA) return;   // evita pagar dos veces
-        resultado = res;
-        pagoRonda = pago;
-        mensajeResultado = mensaje;
-        saldo += pago;
-        estado = EstadoRonda.RONDA_TERMINADA;
+        int fj = fuerza(j);
+        int fc = fuerza(c);
+
+        /**Para el black jack*/
+        if (fj == 4 && fc == 4){
+            cerrar(ResultadoRonda.EMPATE, apuesta, "Ambos sacan Black Jack, quedan empatados.");
+        } else if (fj == 4){
+            cerrar(ResultadoRonda.Victoria, apuesta * 5/2, "Blackjack! a favor del jugador, ganas con bonus.");
+        } else if (fc == 4){
+            cerrar(ResultadoRonda.DERROTA, 0, "La maquina saca Black Jack"+ c.puntaje() + "en sus dos primeras rondas, pierdes la ronda.");
+            /**Para una jugada del mismo nivel, aqui hago uso de la ia, reportado en REGISTRO_IA.md*/
+        }else if (fj == fc){
+            if (fj == 1 && j.puntaje() > c.puntaje()) {
+                cerrar(ResultadoRonda.VICTORIA, 2 * apuesta, "Ganas con " + j.puntaje() + " contra " + c.puntaje() + ".");
+            } else if (fj == 1 && j.puntaje() < c.puntaje()) {
+                cerrar(ResultadoRonda.DERROTA, 0, "Pierdes: " + j.puntaje() + " contra " + c.puntaje() + ".");
+            } else {
+                cerrar(ResultadoRonda.EMPATE, apuesta, "Empate con " + j.puntaje() + " puntos. Se devuelve tu apuesta.");
+            }
+        /**Para las jugadas de distinto nivel solo gana el que tenga mas fuerza*/
+            } else if (fj > fc){
+                cerrar(ResultadoRonda.VICTORIA, 2 * apuesta, explicarNivel(true, j, c));
+            }else{
+                cerrar(ResultadoRonda.Derrota, 0, explicarNivel(false, j, c));
+            }
+    }
+    /**Cuando el resultado se decida por la prioridad entre jugadas*/
+    private String explicarNivel(boolean ganaJugador, Mano j, Mano c){
+        if(ganaJugador){
+            if(ganaJugador){
+                if(fuerza(j) == 3){
+                    return "Ganas con 21 en contra de" + c.puntaje() + ".";
+                }
+                return "Veinte y medio le gana " + c.puntaje() + " de la maquina, Victoria!";
+            }
+            if(fuerza(c) == 3){
+                if(fuerza(j) == 2){
+                    return "Tu 20 y medio pierde frente al 21 de la maquina";
+                }
+                return "Pierdes contra el computador que hizo 21 y tu" + j.puntaje() + ".";
+            }
+            return "Pierdes contra el computador que tiene 20 y medio.";
+        }
+        /**Este comando cierra la ronda y aplica el pago*/
+        private void cerrar(ResultadoRonda res, int pago, String mensaje){
+            if(estado == EstadoRonda.RONDA_TERMINADA) return;
+            resultado = res;
+            pagoRonda = pago;
+            mensajeResultado = mensaje;
+            saldo += pago;
+            estado = EstadoRonda.RONDA_TERMINADA;
+        }
     }
 }
