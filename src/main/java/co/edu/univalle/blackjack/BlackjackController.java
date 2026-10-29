@@ -1,6 +1,7 @@
 package co.edu.univalle.blackjack;
 
 import co.edu.univalle.blackjack.modelo.Carta;
+import co.edu.univalle.blackjack.modelo.Jugada;
 import co.edu.univalle.blackjack.modelo.Mano;
 import co.edu.univalle.blackjack.modelo.Partida;
 import javafx.fxml.FXML;
@@ -73,19 +74,33 @@ public class BlackjackController {
     private void avanzar() {
         actualizarVista();
         switch (partida.getEstado()) {
-            case TURNO_JUGADOR    -> lblMensaje.setText("Tu turno: pide carta o plántate.");
+            case TURNO_JUGADOR -> {
+                if (partida.getManoJugador().getJugada() == Jugada.VEINTE_Y_MEDIO) {
+                    lblMensaje.setText("¡Veinte y medio! Pide carta o plántate.");
+                } else {
+                    lblMensaje.setText("Tu turno: pide carta o plántate.");
+                }
+            }
             case TURNO_COMPUTADOR -> turnoComputador();
-            case RONDA_TERMINADA  -> lblMensaje.setText(partida.getMensajeResultado());
+            case RONDA_TERMINADA -> {
+                String mensaje = partida.getMensajeResultado();
+                if (!partida.haySaldoSuficiente()) {
+                    mensaje += " Te quedaste sin fichas suficientes: no es posible seguir apostando.";
+                }
+                lblMensaje.setText(mensaje);
+            }
             default -> { }
         }
     }
+
     /** El computador juega un paso por segundo para que se vea lo que hace. */
     private void turnoComputador() {
-        lblMensaje.setText("Turno del computador...");
+        String jugada = partida.getManoJugador().getJugada() == Jugada.BLACKJACK ? "¡Blackjack! " : "";
+        lblMensaje.setText(jugada + "Turno del computador...");
         PauseTransition pausa = new PauseTransition(Duration.seconds(1));
         pausa.setOnFinished(e -> {
-            partida.jugarPasoComputador();   // un solo paso: repartir, pedir o resolver
-            avanzar();                       // si sigue en TURNO_COMPUTADOR, espera otro segundo
+            partida.jugarPasoComputador();
+            avanzar();
         });
         pausa.play();
     }

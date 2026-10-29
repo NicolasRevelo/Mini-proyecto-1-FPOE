@@ -24,3 +24,8 @@ para comprobar el resultado (compilar, ejecutar, comparar con el enunciado o con
 |4|2026-10-28|Douglas|No supe como hacer que funcione la jugade el mismo nivel en Partida.java para el modelo.|Claude me dio una serie de else con los ResultadoRonda, lo veo funcional asi que lo agrego al codigo.
 |5|2026-10-28|Douglas|Mi compañero me deja un pendiente sobre si cuenta el AS +3 y si se pierde al pedir mas cartas.| Claude dice que no es necesario el arreglo, per por si acaso agrego un switch que se puede prendar en caso de no necesitarlo, mejor que sobre a que falte.
 |6|2026-10-29|Douglas| No tengo una idea clar de como realizar la función mezclar en el archivo de Mazo|Claude me arroja un codigo con un for anidado para realizar la mezcla aleatoria|Cambio las variables que se presentan en el ejemplo de claude y simplifico la logica
+-NICOLÁS: Se le pide a la IA una revision provisional después de incluir la parte de Douglas, donde nos señala que hay dos "fallas" o"huecos" por así decirlo que son: Los dos huecos:
+
+Veinte y medio y Blackjack no se anuncian (HU04 4.3 y HU07 7.5). Dicen que con 14 se muestra el mensaje de Veinte y medio y que “se informa la jugada”. Tu controlador nunca consulta getJugada(). Antes te dije que HU04 estaba completa, y no era cierto. Lo corregimos ahora.
+Sin fichas (HU10 10.4). Si pierdes y quedas con menos de 10 fichas, el mensaje solo dice que perdiste. Debe informar que no es posible seguir apostando.
+
