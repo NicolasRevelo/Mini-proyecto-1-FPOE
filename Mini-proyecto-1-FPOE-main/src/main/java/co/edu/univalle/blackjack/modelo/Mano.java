@@ -29,7 +29,7 @@ public class Mano {
             while (actual.getSiguiente() != null){
                 actual = actual.getSiguiente();
             }
-            actual.setSiguiente(nuevo)
+            actual.setSiguiente(nuevo);
         }
         numeroCartas++;
     }
@@ -68,7 +68,7 @@ public class Mano {
     }
 
     /** Blackjack: exactamente dos cartas que suman 21 (As + diez). */
-    public boolean esBlackjack() { return cartas.size() == 2 && puntaje() == 21; }
+    public boolean esBlackjack() { return numeroCartas == 2 && puntaje() == 21; }
 
     /**
      * Veinte y medio: dos cartas que suman 14.*/

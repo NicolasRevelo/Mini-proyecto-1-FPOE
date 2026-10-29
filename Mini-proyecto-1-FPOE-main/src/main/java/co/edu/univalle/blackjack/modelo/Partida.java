@@ -200,13 +200,13 @@ public class Partida {
          realizar un escenario en el juego real*/
 
         if (manoComputador.estaVacia()){
-            manoComputador.agregar(mazo.Repartir());
-            manoComputador.agregar(mazo.Repartir());
+            manoComputador.agregar(mazo.repartir());
+            manoComputador.agregar(mazo.repartir());
             if (manoJugador.esBlackjack() || manoComputador.esBlackjack()) {
                 resolver();
                 return;
             }
-        } else if (manoJugador.esBlackjack() || < PUNTAJE_PLANTARSE_COMPUTADOR){
+        } else if (manoComputador.puntaje() < PUNTAJE_PLANTARSE_COMPUTADOR){
             manoComputador.agregar(mazo.repartir());
         }
 
@@ -252,7 +252,7 @@ public class Partida {
         if (fj == 4 && fc == 4){
             cerrar(ResultadoRonda.EMPATE, apuesta, "Ambos sacan Black Jack, quedan empatados.");
         } else if (fj == 4){
-            cerrar(ResultadoRonda.Victoria, apuesta * 5/2, "Blackjack! a favor del jugador, ganas con bonus.");
+            cerrar(ResultadoRonda.VICTORIA, apuesta * 5/2, "Blackjack! a favor del jugador, ganas con bonus.");
         } else if (fc == 4){
             cerrar(ResultadoRonda.DERROTA, 0, "La maquina saca Black Jack"+ c.puntaje() + "en sus dos primeras rondas, pierdes la ronda.");
             /**Para una jugada del mismo nivel, aqui hago uso de la ia, reportado en REGISTRO_IA.md*/
@@ -268,34 +268,33 @@ public class Partida {
             } else if (fj > fc){
                 cerrar(ResultadoRonda.VICTORIA, 2 * apuesta, explicarNivel(true, j, c));
             }else{
-                cerrar(ResultadoRonda.Derrota, 0, explicarNivel(false, j, c));
+                cerrar(ResultadoRonda.DERROTA, 0, explicarNivel(false, j, c));
             }
     }
     /**Cuando el resultado se decida por la prioridad entre jugadas*/
-    private String explicarNivel(boolean ganaJugador, Mano j, Mano c){
-        if(ganaJugador){
-            if(ganaJugador){
-                if(fuerza(j) == 3){
-                    return "Ganas con 21 en contra de" + c.puntaje() + ".";
-                }
-                return "Veinte y medio le gana " + c.puntaje() + " de la maquina, Victoria!";
+    private String explicarNivel(boolean ganaJugador, Mano j, Mano c) {
+        if (ganaJugador) {
+            if (fuerza(j) == 3) {
+                return "Ganas con 21 en contra de" + c.puntaje() + ".";
             }
-            if(fuerza(c) == 3){
-                if(fuerza(j) == 2){
-                    return "Tu 20 y medio pierde frente al 21 de la maquina";
-                }
+                return "Veinte y medio le gana " + c.puntaje() + " de la maquina, Victoria!";
+        }
+        if (fuerza(c) == 3) {
+            if (fuerza(j) == 2) {
+                return "Tu 20 y medio pierde frente al 21 de la maquina";
+            }
                 return "Pierdes contra el computador que hizo 21 y tu" + j.puntaje() + ".";
             }
             return "Pierdes contra el computador que tiene 20 y medio.";
+
         }
-        /**Este comando cierra la ronda y aplica el pago*/
-        private void cerrar(ResultadoRonda res, int pago, String mensaje){
-            if(estado == EstadoRonda.RONDA_TERMINADA) return;
-            resultado = res;
-            pagoRonda = pago;
-            mensajeResultado = mensaje;
-            saldo += pago;
-            estado = EstadoRonda.RONDA_TERMINADA;
-        }
+    /**Este comando cierra la ronda y aplica el pago*/
+    private void cerrar(ResultadoRonda res, int pago, String mensaje){
+        if(estado == EstadoRonda.RONDA_TERMINADA) return;
+        resultado = res;
+        pagoRonda = pago;
+        mensajeResultado = mensaje;
+        saldo += pago;
+        estado = EstadoRonda.RONDA_TERMINADA;
     }
 }
