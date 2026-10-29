@@ -11,7 +11,6 @@ Si se modificó o se descartó, se explica qué y por qué. En "Verificación" v
 para comprobar el resultado (compilar, ejecutar, comparar con el enunciado o con las historias).
 
 | # | Fecha | Quién | Para qué se usó | Qué se recibió | Qué se cambió o descartó | Verificación |
-|---|---|---|---|---|---|---|
 | 1 | 2026-10-22 | Nicolás | Plan de trabajo de 7 días a partir del enunciado, las historias de usuario y la rúbrica | PDF con reparto A/B, calendario, entregables y casos de prueba |  |  se contrastó con la rúbrica y el enunciado y está bien |
 | 2 | 2026-10-22 | Nicolás | Contrato entre el modelo (A) y la vista/controlador (B) y una versión provisional del modelo | `CONTRATO.md` y 8 clases Java con una partida "falsa" (3 escenarios fijos) | Se cambió `plantarse()` para que el turno del computador sea paso a paso (`jugarPasoComputador()`) | Se compiló y se recorrió una ronda completa por consola |
 **(el contrato es donde llegamos a acuerdos ambos y declaramos los nombres de clases y metodos, se sube siempre con un commit)
@@ -21,3 +20,5 @@ para comprobar el resultado (compilar, ejecutar, comparar con el enunciado o con
 -NICOLÁS: Se le pide a la IA que explique un poco cómo se conectan los archivos blackjack-view.fxml, BlackjackController.java y BlackjackApp.java, le pedí que comprobara los criterios de la HU01
 -NICOLÁS: escribí el codigo de 'onIniciarRonda', 'dibujarMano'y 'crearImagenCarta'  en el controlador. | Claude me indicó mal dónde pegar los métodos y quedaron dentro de `actualizarVista()`. Lo detecté por los errores en rojo de IntelliJ, moví la llave y quedó bien. | Compilé y comprobé que salen las cartas, el saldo baja y el puntaje cambia |
 -NICOLÁS: Conectar "Pedir carta" (HU04) | Claude dio el método `onPedirCarta` y el `onAction` del FXML. Yo lo agregué. | Claude había dicho que el botón ya agregaba cartas, pero todavía no estaba conectado. Lo noté al probarlo y lo conecte | Probé: cartas K, 5, 4, 9 = 28, derrota y botones que ya no se pudieran hundir |
+|3|2026-10-28|Douglas|Para averiguar como hacer que el jugador tuviera dos cartas al principio del juego|se recibio un for para el comand de manoJugador.agregar(mazo.repartir()) pero preferí simplemente repetir el comando dos veces.
+|4|2026-10-28|Douglas|No supe como hacer que funcione la jugade el mismo nivel en Partida.java para el modelo.|Claude me dio una serie de else con los ResultadoRonda, lo veo funcional asi que lo agrego al codigo.
