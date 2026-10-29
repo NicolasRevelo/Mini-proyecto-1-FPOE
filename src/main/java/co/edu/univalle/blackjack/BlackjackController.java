@@ -89,6 +89,11 @@ public class BlackjackController {
         });
         pausa.play();
     }
+    @FXML
+    private void onPlantarse() {
+        partida.plantarse();   // solo cambia el estado a TURNO_COMPUTADOR
+        avanzar();
+    }
     /**
      * Pinta TODA la pantalla según lo que diga el modelo.
      * La idea: la pantalla siempre es un reflejo del estado de la Partida.
