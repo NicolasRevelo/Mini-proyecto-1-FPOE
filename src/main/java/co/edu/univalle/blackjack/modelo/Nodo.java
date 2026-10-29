@@ -14,4 +14,3 @@ public class Nodo {
     Nodo getSiguiente() {return siguiente;}
     void setSiguiente(Nodo siguiente) { this.siguiente = siguiente; }
 }
-
