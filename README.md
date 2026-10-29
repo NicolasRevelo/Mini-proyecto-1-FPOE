@@ -13,7 +13,7 @@ El jugador empieza con 1000 fichas, apuesta, pide cartas o se planta, y el compu
 | Nicolás Revelo Noreña | Persona B: vista y controlador | `NicolasRevelo` | 2537974 | nicolas.revelo@correounivalle.edu.co |
 | Douglas Velez Monginaite | Persona A: modelo | `douglasvelez-crypto` | 2516737 | douglas.velez@correounivalle.edu.co |
 
-- **Repositorio:** 
+- **Repositorio:** https://github.com/NicolasRevelo/Mini-proyecto-1-FPOE
 - **Commit de la entrega:** _(completar con el enlace al commit final)_
 - **Acceso de la docente:** _(completar con el usuario de GitHub de la profesora, agregada como colaboradora)_
 
