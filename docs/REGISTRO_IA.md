@@ -11,6 +11,7 @@ Si se modificó o se descartó, se explica qué y por qué. En "Verificación" v
 para comprobar el resultado (compilar, ejecutar, comparar con el enunciado o con las historias).
 
 | # | Fecha | Quién | Para qué se usó | Qué se recibió | Qué se cambió o descartó | Verificación |
+
 | 1 | 2026-10-22 | Nicolás | Plan de trabajo de 7 días a partir del enunciado, las historias de usuario y la rúbrica | PDF con reparto A/B, calendario, entregables y casos de prueba |  |  se contrastó con la rúbrica y el enunciado y está bien |
 
 | 2 | 2026-10-22 | Nicolás | Contrato entre el modelo (A) y la vista/controlador (B) y una versión provisional del modelo | `CONTRATO.md` y 8 clases Java con una partida "falsa" (3 escenarios fijos) | Se cambió `plantarse()` para que el turno del computador sea paso a paso (`jugarPasoComputador()`) | Se compiló y se recorrió una ronda completa por consola |
