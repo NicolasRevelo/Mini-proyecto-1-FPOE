@@ -10,6 +10,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+
 
 /**
  (Persona B).
@@ -58,13 +61,33 @@ public class BlackjackController {
             return;
         }
         partida.iniciarRonda(Integer.parseInt(campoApuesta.getText().trim()));
-        actualizarVista();
+        avanzar();
     }
     /** Se ejecuta al pulsar "Pedir carta". */
     @FXML
     private void onPedirCarta() {
         partida.pedirCarta();   // le pedimos al modelo que reparta una carta más
-        actualizarVista();      // volvemos a leer el modelo y repintamos
+        avanzar();
+    }
+    /** Repinta y decide qué sigue, según el estado que dice el modelo. */
+    private void avanzar() {
+        actualizarVista();
+        switch (partida.getEstado()) {
+            case TURNO_JUGADOR    -> lblMensaje.setText("Tu turno: pide carta o plántate.");
+            case TURNO_COMPUTADOR -> turnoComputador();
+            case RONDA_TERMINADA  -> lblMensaje.setText(partida.getMensajeResultado());
+            default -> { }
+        }
+    }
+    /** El computador juega un paso por segundo para que se vea lo que hace. */
+    private void turnoComputador() {
+        lblMensaje.setText("Turno del computador...");
+        PauseTransition pausa = new PauseTransition(Duration.seconds(1));
+        pausa.setOnFinished(e -> {
+            partida.jugarPasoComputador();   // un solo paso: repartir, pedir o resolver
+            avanzar();                       // si sigue en TURNO_COMPUTADOR, espera otro segundo
+        });
+        pausa.play();
     }
     /**
      * Pinta TODA la pantalla según lo que diga el modelo.
