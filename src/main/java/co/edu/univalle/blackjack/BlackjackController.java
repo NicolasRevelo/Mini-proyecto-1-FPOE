@@ -13,7 +13,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
 
 /**
  (Persona B).
@@ -25,7 +29,38 @@ public class BlackjackController {
 
     /** El modelo. Todo lo que pasa en el juego vive aquí. */
     private final Partida partida = new Partida();
+    private static final String REGLAS = """
+        OBJETIVO
+        Acercarte a 21 sin pasarte y superar al computador.
 
+        VALORES
+        Del 2 al 10 valen su número; J, Q y K valen 10. El As vale 11 o 1, el que más te
+        convenga sin pasarte de 21 (si todas las combinaciones se pasan, cuenta 1). Los palos no cuentan.
+
+        APUESTAS
+        Empiezas con 1000 fichas. La apuesta es un número entero, múltiplo de 10, mínimo 10
+        y no mayor que tu saldo. Se descuenta al iniciar la ronda y no cambia durante ella.
+
+        TU TURNO
+        Recibes dos cartas. Puedes pedir carta o plantarte. Si te pasas de 21, pierdes de
+        inmediato y el computador no juega. Con 21 o Blackjack, el turno pasa solo al computador.
+
+        COMPUTADOR
+        Recibe dos cartas al comenzar su turno. Pide carta mientras tenga menos de 17 y se
+        planta con 17 a 21. Si se pasa de 21, pierde. Decide solo por su propia mano.
+
+        JUGADAS
+        Blackjack: un As y una carta de valor 10 en las dos primeras cartas.
+        Veintiuno: 21 que no es Blackjack (por ejemplo, de tres cartas).
+        Veinte y medio: las dos primeras cartas suman 14.
+        Prioridad: Blackjack > Veintiuno > Veinte y medio > cualquier otro puntaje.
+        Con jugadas del mismo nivel gana el mayor puntaje; si son iguales, hay empate.
+        Veinte y medio no da victoria automática ni pago extra.
+
+        PAGOS (ejemplo con apuesta de 100 y saldo de 1000)
+        Derrota: pierdes la apuesta (900). Empate: se devuelve (1000).
+        Victoria: recibes el doble (1100). Victoria con Blackjack: 2,5 veces (1150).
+        """;
     // ---- Elementos de la pantalla (se conectan por el fx:id del FXML) ----
     @FXML private Label lblSaldo;
     @FXML private Label lblApuesta;
