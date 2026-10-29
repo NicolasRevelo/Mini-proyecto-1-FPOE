@@ -64,8 +64,8 @@
             <Button fx:id="btnIniciar" text="Iniciar ronda" onAction="#onIniciarRonda"/>
             <Button fx:id="btnPedir" text="Pedir carta" onAction="#onPedirCarta"/>
             <Button fx:id="btnPlantarse" text="Plantarse" onAction="#onPlantarse"/>
-            <Button fx:id="btnReglas" text="Ver reglas"/>
-            <Button fx:id="btnCerrar" text="Cerrar juego"/>
+            <Button fx:id="btnReglas" text="Ver reglas" onAction="#onVerReglas"/>
+            <Button fx:id="btnCerrar" text="Cerrar juego" onAction="#onCerrar"/>
         </HBox>
     </bottom>
 </BorderPane>

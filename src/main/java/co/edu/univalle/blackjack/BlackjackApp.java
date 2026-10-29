@@ -21,6 +21,12 @@ public class BlackjackApp extends Application {
         stage.setScene(escena);
         stage.setMinWidth(760);
         stage.setMinHeight(620);
+        BlackjackController controlador = cargador.getController();
+        stage.setOnCloseRequest(evento -> {
+            if (!controlador.confirmarCierre()) {
+                evento.consume();   // consume = "cancelar el cierre": la ventana sigue abierta
+            }
+        });
         stage.show();
     }
 }
